@@ -164,16 +164,16 @@ async function run() {
 
         })
 
+        app.get('/user', async (req, res) => {
 
-
-
-
-
-
-
-
-
-
+            const users = await usersCollection.find().toArray();
+            res.send(users);
+        });
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const users = await ordersCollection.find(query).toArray();
+            res.send(users);
+        });
 
 
     }
