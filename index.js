@@ -174,6 +174,53 @@ async function run() {
             const users = await ordersCollection.find(query).toArray();
             res.send(users);
         });
+        app.get('/orders/email', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const users = await ordersCollection.find(query).toArray();
+            res.send(users);
+        });
+        app.get('/user/email', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await usersCollection.find(query).toArray();
+            res.send({ user });
+        });
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const users = await ordersCollection.find(query).toArray();
+            res.send(users);
+        });
+        app.delete('/tools/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await toolsCollection.deleteOne(query);
+            res.send(result);
+        });
+        app.get('/admin/:email', verifyJwt, async (req, res) => {
+            const email = req.params.email;
+            const decodedUser = req.decoded.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin });
+        });
+
+        app.put('/user/admin/:email', verifyJwt, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: {
+                    role: 'admin',
+                },
+            }
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+
+
 
 
     }
