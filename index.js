@@ -57,6 +57,32 @@ async function run() {
             }
         });
 
+        app.post('/orders', async (req, res) => {
+            const data = req.body;
+            const doc = {
+                name: data.name,
+                email: data.email,
+                quantity: data.quantity,
+                address: data.address,
+                phone: data.phone,
+                price: data.price
+            }
+            const result = await ordersCollection.insertOne(doc);
+            res.send(result);
+        });
+        app.post('/reviews', async (req, res) => {
+            const data = req.body;
+            const doc = {
+                name: data.name,
+                email: data.email,
+                img: data.img,
+                review: data.review
+            }
+            const result = await reviewsCollection.insertOne(doc);
+            res.send(result);
+        });
+
+
     }
     finally {
         // await client.close();
