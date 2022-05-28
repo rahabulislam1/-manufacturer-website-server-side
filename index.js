@@ -133,9 +133,36 @@ async function run() {
             const paymentUpdate = await paymentCollection.insertOne(payment);
             res.send(updatedDoc);
         })
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    status: 'Shipped',
+                }
+            }
+            const updatedOrder = await ordersCollection.updateOne(query, updatedDoc);
+            res.send(updatedOrder);
+        })
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const updatedOrder = await ordersCollection.deleteOne(query);
+            res.send(updatedOrder);
+        })
 
+        app.patch('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    status: 'Canceled',
+                }
+            }
+            const updatedOrders = await ordersCollection.updateOne(query, updatedDoc);
+            res.send(updatedOrders);
 
-
+        })
 
 
 
