@@ -22,7 +22,40 @@ async function run() {
         const reviewsCollection = client.db("toolsCollection").collection("reviews");
         const profilesCollection = client.db("toolsCollection").collection("profile");
 
+        function verifyJwt(req, res, next) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) {
+                return res.status(401).send({ message: 'UnAuthorized Access' });
+            }
+            const token = authHeader.split(' ')[1];
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+                if (err) {
+                    return res.status(403).send({ message: 'Forbidden Access' })
+                }
+                req.decoded = decoded;
+                next();
+            });
 
+        }
+
+        app.post('/create-payment-intent', async (req, res) => {
+            const service = req.body;
+            const price = service.price;
+            const amount = price * 100;
+            try {
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: amount,
+                    currency: 'usd',
+                    payment_method_types: ["card"]
+                });
+                res.json({
+                    clientSecret: paymentIntent.client_secret,
+                });
+            }
+            catch (e) {
+                res.status(400).json({ error: { message: e.message } });
+            }
+        });
 
     }
     finally {
