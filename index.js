@@ -112,7 +112,27 @@ async function run() {
             const result = await reviewsCollection.find(query).toArray();
             res.send(result);
         });
+        app.patch('/orders/:id', async (req, res) => {
 
+            const id = req.params.id;
+            const partsId = req.body.partsId;
+            const transactionId = req.body.transactionId;
+            const payment = {
+                partsId,
+                transactionId
+            }
+            const query = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    status: 'pending',
+                    transactionId: transactionId
+                }
+            }
+            const updatedOrders = await ordersCollection.updateOne(query, updatedDoc);
+            const paymentUpdate = await paymentCollection.insertOne(payment);
+            res.send(updatedDoc);
+        })
 
 
 
