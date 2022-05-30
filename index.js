@@ -167,7 +167,6 @@ async function run() {
         })
 
         app.get('/user', async (req, res) => {
-
             const users = await usersCollection.find().toArray();
             res.send(users);
         });
@@ -266,7 +265,7 @@ async function run() {
 }
 run().catch(console.dir);
 app.get('/', (req, res) => {
-    res.send('hello world');
+    res.send('Hello Progremmer');
 })
 app.listen(port, () => {
     console.log(`port: ${port}`)
